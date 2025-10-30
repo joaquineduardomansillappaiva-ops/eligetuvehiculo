@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eligetuvehiculo.cl - Marketplace de Vehículos</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; background: #f0f0f0;}
+        header {background: #0b203b; color: white; padding: 20px; display: flex; align-items: center; justify-content: space-between;}
+        header img {height: 60px;}
+        header nav a {color: #ffffff; margin-left: 20px; text-decoration: none; font-weight: bold;}
+        .hero {background: #06182c; color: white; text-align: center; padding: 60px 20px;}
+        .hero h2 {font-size: 2.5em; margin-bottom: 10px;}
+        .hero p {font-size: 1.2em; margin-bottom: 20px;}
+        .search-container {background: white; padding: 20px; margin: 20px auto; max-width: 1200px;
+                           box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 4px; display: flex;
+                           flex-wrap: wrap; gap: 10px;}
+        .search-container input, .search-container select {padding: 10px; border: 1px solid #ccc;
+                           border-radius: 4px; flex: 1; min-width: 180px;}
+        .container {padding: 20px; max-width: 1200px; margin: 0 auto;}
+        .cars {display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;}
+        .car {background: white; border-radius: 4px; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.1);
+              transition: transform 0.2s;}
+        .car:hover {transform: translateY(-3px);}
+        .car img {width: 100%; height: 150px; object-fit: cover;}
+        .car-content {padding: 15px;}
+        .car-content h3 {margin: 0 0 5px 0;}
+        .car-content p {margin: 3px 0;}
+        footer {background: #0b203b; color: white; text-align: center; padding: 20px; margin-top: 40px;}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAoCAYAAACiu5n/AAAAUGVYSWZNTQAqAAAACAACARIAAwAAAAEAAQAAh2kABAAAAAEAAAAm" alt="Logo eligetuvehiculo">
+        <nav>
+            <a href="#vehicles">Vehículos</a>
+            <a href="#contact">Contacto</a>
+        </nav>
+    </header>
+    <section class="hero">
+        <h2>Busca y Publica Vehículos</h2>
+        <p>La plataforma inteligente para encontrar el auto perfecto y conectar con vendedores de confianza.</p>
+    </section>
+
+    <div class="search-container">
+        <input type="text" id="searchKeyword" placeholder="Buscar por marca o modelo...">
+        <select id="typeFilter">
+            <option value="">Tipo de vehículo</option>
+            <option value="SUV">SUV</option>
+            <option value="Sedán">Sedán</option>
+            <option value="Deportivo">Deportivo</option>
+            <option value="Hatchback">Hatchback</option>
+        </select>
+        <select id="priceFilter">
+            <option value="">Rango de precio</option>
+            <option value="0-10000000">Hasta 10M CLP</option>
+            <option value="10000000-20000000">10M - 20M CLP</option>
+            <option value="20000000-50000000">20M - 50M CLP</option>
+        </select>
+    </div>
+
+    <div class="container" id="vehicles">
+        <div class="cars" id="carList">
+            <!-- Aquí se insertan los vehículos mediante JS -->
+        </div>
+    </div>
+
+    <footer id="contact">
+        <p>&copy; 2025 eligetuvehiculo.cl - Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Datos de ejemplo para vehículos
+        const cars = [
+            { type: "SUV", brand: "Toyota", model: "RAV4", year: 2022, price: 18000000, image: "https://source.unsplash.com/400x250/?toyota,suv" },
+            { type: "Sedán", brand: "Hyundai", model: "Elantra", year: 2023, price: 15000000, image: "https://source.unsplash.com/400x250/?hyundai,sedan" },
+            { type: "Deportivo", brand: "Ford", model: "Mustang", year: 2024, price: 35000000, image: "https://source.unsplash.com/400x250/?ford,mustang" },
+            { type: "Hatchback", brand: "Chevrolet", model: "Spark", year: 2021, price: 8000000, image: "https://source.unsplash.com/400x250/?chevrolet,hatchback" },
+            { type: "SUV", brand: "Kia", model: "Sportage", year: 2023, price: 21000000, image: "https://source.unsplash.com/400x250/?kia,suv" },
+            { type: "Sedán", brand: "Nissan", model: "Sentra", year: 2022, price: 14000000, image: "https://source.unsplash.com/400x250/?nissan,sedan" }
+        ];
+
+        const carList = document.getElementById('carList');
+        const searchKeyword = document.getElementById('searchKeyword');
+        const typeFilter = document.getElementById('typeFilter');
+        const priceFilter = document.getElementById('priceFilter');
+
+        function displayCars(list) {
+            carList.innerHTML = '';
+            list.forEach(car => {
+                const carDiv = document.createElement('div');
+                carDiv.className = 'car';
+                carDiv.innerHTML = `
+                    <img src="${car.image}" alt="${car.brand} ${car.model}">
+                    <div class="car-content">
+                        <h3>${car.brand} ${car.model}</h3>
+                        <p>Tipo: ${car.type}</p>
+                        <p>Año: ${car.year}</p>
+                        <p>Precio: ${car.price.toLocaleString('es-CL')} CLP</p>
+                    </div>
+                `;
+                carList.appendChild(carDiv);
+            });
+        }
+
+        function filterCars() {
+            let filtered = cars;
+
+            const keyword = searchKeyword.value.toLowerCase().trim();
+            if (keyword) {
+                filtered = filtered.filter(car =>
+                    car.brand.toLowerCase().includes(keyword) || car.model.toLowerCase().includes(keyword)
+                );
+            }
+
+            const type = typeFilter.value;
+            if (type) {
+                filtered = filtered.filter(car => car.type === type);
+            }
+
+            const priceRange = priceFilter.value;
+            if (priceRange) {
+                const [min, max] = priceRange.split('-').map(Number);
+                filtered = filtered.filter(car => car.price >= min && car.price <= max);
+            }
+
+            displayCars(filtered);
+        }
+
+        searchKeyword.addEventListener('input', filterCars);
+        typeFilter.addEventListener('change', filterCars);
+        priceFilter.addEventListener('change', filterCars);
+
+        // Mostrar todos los vehículos al cargar
+        displayCars(cars);
+    </script>
+</body>
+</html>
